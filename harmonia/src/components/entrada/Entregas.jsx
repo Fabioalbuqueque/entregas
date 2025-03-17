@@ -19,12 +19,21 @@ import {
 export const Entregas = () => {
   const [pegar, setPegar] = useState("");
   const [categoria, setCategoria] = useState("A");
-  const [varios, setVarios] = useState(() => {
-    return JSON.parse(localStorage.getItem("deliveries")) || [];
-  });
+  const [varios, setVarios] = useState([]);
 
   useEffect(() => {
-    localStorage.setItem("deliveries", JSON.stringify(varios));
+    if (typeof window !== "undefined") {
+      const storedData = localStorage.getItem("deliveries");
+      if (storedData) {
+        setVarios(JSON.parse(storedData));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("deliveries", JSON.stringify(varios));
+    }
   }, [varios]);
 
   const Adicionar = () => {
@@ -158,8 +167,7 @@ export const Entregas = () => {
                   />
                   {item.nome} <strong>({item.quantidade})</strong> -
                   <span
-                    style={{
-                      color: item.status === "entregue" ? "green" : "red"}}
+                    style={{ color: item.status === "entregue" ? "green" : "red" }}
                   >
                     {item.status}
                   </span>
